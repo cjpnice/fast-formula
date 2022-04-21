@@ -39,6 +39,9 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+
+  // //创建系统通知区菜单
+  tray = new Tray(path.join(__dirname, "../../static/favicon.ico"));
   // 点击关闭时，并没有真正关闭，而是隐藏窗口
   mainWindow.on("close", (event) => {
     mainWindow.hide();
@@ -51,9 +54,6 @@ function createWindow() {
   mainWindow.on("hide", () => {
     tray.setHighlightMode("never");
   });
-
-  //创建系统通知区菜单
-  tray = new Tray(path.join(__dirname, "static/favicon.ico"));
   //定制退出操作
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -73,9 +73,12 @@ function createWindow() {
 
 app.on("ready", () => {
   createWindow();
-  globalShortcut.register("ctrl+alt+f", () => {
-    mainWindow.show();
-  });
+  if (process.platform !== "darwin") {
+    globalShortcut.register("ctrl+o", () => {
+      mainWindow.show();
+    });
+  }
+ 
 });
 
 app.on("window-all-closed", () => {
