@@ -1,6 +1,7 @@
 # fast-formula
 
-> An electron-vue project
+> 该软件的主要功能就是使用markdown语法编写公式，生成预览后便于截图使用。软件中内置了一些常用的公式符号，便于查找
+> 当然，不仅是编辑公式，markdown中的所有语法都可以使用，
 
 #### Build Setup
 
