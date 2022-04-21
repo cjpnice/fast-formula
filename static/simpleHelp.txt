@@ -1,0 +1,28 @@
+### 常用符号
+
+1. 分式表示，符号：`\frac{分子}{分母}`，如：$\frac{x+y}{y+z}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 点乘运算，符号：`\cdot`，如：$x \cdot y=z$
+
+3. 求和运算，符号：`\sum`，如：$\sum^{x \to \infty}_{y \to 0}{\frac{x}{y}}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4. 极限运算，符号：`\lim`，如：$\lim^{x \to \infty}_{y \to 0}{\frac{x}{y}}$
+
+5. 积分运算，符号：`\int`，如：$\int^{\infty}_{0}{xdx}$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6. 微分运算，符号：`\partial`，如：$\frac{\partial x}{\partial y}$
+
+7. 不等于运算，符号：`\neq`，如：$x+y \neq z$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8. 属于运算，符号：`\in`，如：$x \in y$
+
+9. 子集运算，符号：`\subset`，如：$x \subset y$
+
+### 希腊字母
+
+| 名称    | 大写 | code   | 小写 | code     |
+| ------- | ---- | ------ | ---- | -------- |
+| alpha   | A    | A      | α    | \alpha   |
+| beta    | B    | B      | β    | \beta    |
+| gamma   | Γ    | \Gamma | γ    | \gamma   |
+| delta   | Δ    | \Delta | δ    | \delta   |
+| epsilon | E    | E      | ϵ    | \epsilon |
+| theta   | Θ    | \Theta  | θ    | \theta   |
+| lambda  | Λ    | \Lambda | λ    | \lambda  |
+| mu      | M    | M       | μ    | \mu      |
+| sigma   | Σ    | \Sigma  | σ    | \sigma   |
+| phi     | Φ    | \Phi    | ϕ    | \phi     |
+| psi     | Ψ    | \Psi    | ψ    | \psi     |
+| omega   | Ω    | \Omega  | ω    | \omega   |
