@@ -39,36 +39,37 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-
-  // //创建系统通知区菜单
-  tray = new Tray(path.join(__static, "/favicon.ico"));
-  // 点击关闭时，并没有真正关闭，而是隐藏窗口
-  mainWindow.on("close", (event) => {
-    mainWindow.hide();
-    mainWindow.setSkipTaskbar(true);
-    event.preventDefault();
-  });
-  mainWindow.on("show", () => {
-    tray.setHighlightMode("always");
-  });
-  mainWindow.on("hide", () => {
-    tray.setHighlightMode("never");
-  });
-  //定制退出操作
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: "Quit",
-      click: () => {
-        mainWindow.destroy();
+  if (process.platform !== "darwin") {
+    // //创建系统通知区菜单
+    tray = new Tray(path.join(__static, "/favicon.ico"));
+    // 点击关闭时，并没有真正关闭，而是隐藏窗口
+    mainWindow.on("close", (event) => {
+      mainWindow.hide();
+      mainWindow.setSkipTaskbar(true);
+      event.preventDefault();
+    });
+    mainWindow.on("show", () => {
+      tray.setHighlightMode("always");
+    });
+    mainWindow.on("hide", () => {
+      tray.setHighlightMode("never");
+    });
+    //定制退出操作
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: "Quit",
+        click: () => {
+          mainWindow.destroy();
+        },
       },
-    },
-  ]);
-  tray.setToolTip("Fast Formula");
-  tray.setContextMenu(contextMenu);
-  tray.on("click", () => {
-    mainWindow.show();
-    mainWindow.setSkipTaskbar(false);
-  });
+    ]);
+    tray.setToolTip("Fast Formula");
+    tray.setContextMenu(contextMenu);
+    tray.on("click", () => {
+      mainWindow.show();
+      mainWindow.setSkipTaskbar(false);
+    });
+  }
 }
 
 app.on("ready", () => {
@@ -83,7 +84,6 @@ app.on("ready", () => {
       mainWindow.show();
     });
   }
- 
 });
 
 app.on("window-all-closed", () => {
