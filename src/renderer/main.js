@@ -5,12 +5,19 @@ import router from './router'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import 'font-awesome/css/font-awesome.min.css';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+import db from './datastore'
 Vue.config.productionTip = false
 
+
+/* 其它代码 */
+
+Vue.prototype.$db = db
 // use
 Vue.use(mavonEditor)
-
+Vue.use(ElementUI)
 /* eslint-disable no-new */
 new Vue({
   components: { App },
