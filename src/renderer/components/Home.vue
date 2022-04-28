@@ -5,6 +5,7 @@
       :toolbars="toolbars"
       :defaultOpen="preview"
       :subfield="subfield"
+      ref="md"
     >
       <template slot="left-toolbar-before">
         <button
@@ -42,6 +43,152 @@
           :title="moreTitle"
         ></button>
       </template>
+      <template slot="left-toolbar-after"> | </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('sum')"
+          class="op-icon"
+          aria-hidden="true"
+          title="求和"
+          style="width: 40px"
+        >求和
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('frac')"
+          class="op-icon"
+          aria-hidden="true"
+          title="分式"
+          style="width: 40px"
+        >分式
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('lim')"
+          class="op-icon"
+          aria-hidden="true"
+          title="极限"
+          style="width: 40px"
+        >极限
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('partial')"
+          class="op-icon"
+          aria-hidden="true"
+          title="微分"
+          style="width: 40px"
+        >微分
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('int')"
+          class="op-icon"
+          aria-hidden="true"
+          title="积分"
+          style="width: 40px"
+        >积分
+        </button>
+      </template>
+      <template slot="left-toolbar-after"> | </template>
+            <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('∞')"
+          class="op-icon"
+          aria-hidden="true"
+          title="∞"
+          style="width: 40px"
+        >∞
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('α')"
+          class="op-icon"
+          aria-hidden="true"
+          title="α"
+          style="width: 40px"
+        >α
+        </button>
+      </template>
+       <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('β')"
+          class="op-icon"
+          aria-hidden="true"
+          title="β"
+          style="width: 40px"
+        >β
+        </button>
+      </template>
+       <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('ω')"
+          class="op-icon"
+          aria-hidden="true"
+          title="ω"
+          style="width: 40px"
+        >ω
+        </button>
+      </template>
+       <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('θ')"
+          class="op-icon"
+          aria-hidden="true"
+          title="θ"
+          style="width: 40px"
+        >θ
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('λ')"
+          class="op-icon"
+          aria-hidden="true"
+          title="λ"
+          style="width: 40px"
+        >λ
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('μ')"
+          class="op-icon"
+          aria-hidden="true"
+          title="μ"
+          style="width: 40px"
+        >μ
+        </button>
+      </template>
+      <template slot="left-toolbar-after">
+        <button
+          type="button"
+          @click="setValue('σ')"
+          class="op-icon"
+          aria-hidden="true"
+          title="σ"
+          style="width: 40px"
+        >σ
+        </button>
+      </template>
+
     </mavon-editor>
 
     <mavon-editor
@@ -144,11 +291,52 @@ export default {
       searchInput: "",
     };
   },
+  watch: {
+    value(newVal, oldVal) {
+      if (
+        newVal.substring(0, 2) != "$$" ||
+        newVal.substring(newVal.length - 2, newVal.length) != "$$"
+      ) {
+        this.$notify({
+          title: '提示！',
+          message:" 请不要删除'$$'"
+        });
+       
+      }
+    },
+  },
   mounted() {
     this.helpValue = this.getTxt("static/simpleHelp.txt");
     this.loadSavedFormula();
   },
   methods: {
+    setValue(value) {
+      switch (value){
+        case 'sum': value = '\\sum_{x}^{s}{A}';break;
+        case 'frac': value = '\\frac{a}{b}';break;
+        case 'lim': value = '\\lim_{x \\to 0}{x}';break;
+        case 'partial': value = '\\partial{x}';break;
+        case 'int': value = '\\int^{\\infty}_{0}{xdx}';break;
+        case '∞': value = '\\infty';break;
+        case 'α': value = '\\alpha';break;
+        case 'β': value = '\\beta';break;
+        case 'ω': value = '\\omega';break;
+        case 'θ': value = '\\theta';break;
+        case 'λ': value = '\\lambda';break;
+        case 'μ': value = '\\mu';break;
+        case 'σ': value = '\\sigma';break;
+      }
+        
+
+
+      const $vm = this.$refs.md;
+      $vm.insertText($vm.getTextareaDom(), {
+        prefix: value,
+        subfix: "",
+        str: "",
+      });
+    },
+
     search() {
       if (this.searchInput == "") {
         this.loadSavedFormula();
