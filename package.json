@@ -1,6 +1,6 @@
 {
   "name": "fast-formula",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "CHEN <cjpnice@qq.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -58,11 +58,13 @@
     "electron-store": "^8.0.1",
     "element-ui": "^2.15.8",
     "font-awesome": "^4.7.0",
+    "mathjax-full": "^3.2.0",
     "mavon-editor": "^2.10.4",
     "multispinner": "^0.2.1",
     "nedb": "^1.8.0",
     "text-loader": "0.0.1",
     "vue": "^2.5.16",
+    "vue-clipboard2": "^0.3.3",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1"
   },

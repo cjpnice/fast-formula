@@ -8,11 +8,11 @@ import 'font-awesome/css/font-awesome.min.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+import VueClipboard from 'vue-clipboard2'
 import db from './datastore'
 Vue.config.productionTip = false
+Vue.use(VueClipboard)
 
-
-/* 其它代码 */
 
 Vue.prototype.$db = db
 // use

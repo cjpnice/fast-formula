@@ -6,6 +6,7 @@
       :defaultOpen="preview"
       :subfield="subfield"
       ref="md"
+      id="math"
     >
       <template slot="left-toolbar-before">
         <button
@@ -23,6 +24,24 @@
           class="op-icon fa fa-floppy-o"
           aria-hidden="true"
           title="保存公式"
+        ></button>
+      </template>
+      <template slot="right-toolbar-before">
+        <button
+          type="button"
+          @click="copy('mathml')"
+          class="op-icon fa fa-clipboard"
+          aria-hidden="true"
+          title="复制MathML格式(word)"
+        ></button>
+      </template>
+      <template slot="right-toolbar-before">
+        <button
+          type="button"
+          @click="copy('latex')"
+          class="op-icon fa fa-files-o"
+          aria-hidden="true"
+          title="复制LaTeX格式"
         ></button>
       </template>
       <template slot="right-toolbar-after">
@@ -100,7 +119,7 @@
         </button>
       </template>
       <template slot="left-toolbar-after"> | </template>
-            <template slot="left-toolbar-after">
+      <template slot="left-toolbar-after">
         <button
           type="button"
           @click="setValue('∞')"
@@ -108,7 +127,7 @@
           aria-hidden="true"
           title="∞"
           style="width: 40px"
-        >∞
+        > ∞
         </button>
       </template>
       <template slot="left-toolbar-after">
@@ -119,10 +138,10 @@
           aria-hidden="true"
           title="α"
           style="width: 40px"
-        >α
+        > α
         </button>
       </template>
-       <template slot="left-toolbar-after">
+      <template slot="left-toolbar-after">
         <button
           type="button"
           @click="setValue('β')"
@@ -130,10 +149,10 @@
           aria-hidden="true"
           title="β"
           style="width: 40px"
-        >β
+        > β
         </button>
       </template>
-       <template slot="left-toolbar-after">
+      <template slot="left-toolbar-after">
         <button
           type="button"
           @click="setValue('ω')"
@@ -141,10 +160,10 @@
           aria-hidden="true"
           title="ω"
           style="width: 40px"
-        >ω
+        > ω
         </button>
       </template>
-       <template slot="left-toolbar-after">
+      <template slot="left-toolbar-after">
         <button
           type="button"
           @click="setValue('θ')"
@@ -152,7 +171,7 @@
           aria-hidden="true"
           title="θ"
           style="width: 40px"
-        >θ
+        > θ
         </button>
       </template>
       <template slot="left-toolbar-after">
@@ -163,7 +182,7 @@
           aria-hidden="true"
           title="λ"
           style="width: 40px"
-        >λ
+        > λ
         </button>
       </template>
       <template slot="left-toolbar-after">
@@ -174,7 +193,7 @@
           aria-hidden="true"
           title="μ"
           style="width: 40px"
-        >μ
+        > μ
         </button>
       </template>
       <template slot="left-toolbar-after">
@@ -185,10 +204,9 @@
           aria-hidden="true"
           title="σ"
           style="width: 40px"
-        >σ
+        > σ
         </button>
       </template>
-
     </mavon-editor>
 
     <mavon-editor
@@ -273,6 +291,7 @@
 </template>
 
 <script>
+
 export default {
   name: "home",
   data() {
@@ -289,6 +308,7 @@ export default {
       formulaName: "",
       tableData: [],
       searchInput: "",
+      copyStr: "dfg",
     };
   },
   watch: {
@@ -298,10 +318,9 @@ export default {
         newVal.substring(newVal.length - 2, newVal.length) != "$$"
       ) {
         this.$notify({
-          title: '提示！',
-          message:" 请不要删除'$$'"
+          title: "提示！",
+          message: " 请不要删除'$$'",
         });
-       
       }
     },
   },
@@ -310,24 +329,114 @@ export default {
     this.loadSavedFormula();
   },
   methods: {
-    setValue(value) {
-      switch (value){
-        case 'sum': value = '\\sum_{x}^{s}{A}';break;
-        case 'frac': value = '\\frac{a}{b}';break;
-        case 'lim': value = '\\lim_{x \\to 0}{x}';break;
-        case 'partial': value = '\\partial{x}';break;
-        case 'int': value = '\\int^{\\infty}_{0}{xdx}';break;
-        case '∞': value = '\\infty';break;
-        case 'α': value = '\\alpha';break;
-        case 'β': value = '\\beta';break;
-        case 'ω': value = '\\omega';break;
-        case 'θ': value = '\\theta';break;
-        case 'λ': value = '\\lambda';break;
-        case 'μ': value = '\\mu';break;
-        case 'σ': value = '\\sigma';break;
-      }
-        
+    toMathML(jax, callback) {
+      var mml;
 
+      try {
+        mml = jax.root.toMathML("");
+      } catch (err) {
+        if (!err.restart) {
+          throw err;
+        } // an actual error
+
+        return MathJax.Callback.After([toMathML, jax, callback], err.restart);
+      }
+
+      MathJax.Callback(callback)(mml);
+    },
+    copy(type) {
+      var _this = this;
+      if (type == "mathml") {
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [
+              ["$", "$"],
+              ["\\\\(", "\\\\)"],
+            ],
+          },
+        });
+        let math = document.getElementById("math");
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, math]);
+        
+        MathJax.Hub.Queue(function () {
+          var jax = MathJax.Hub.getAllJax();
+
+          _this.toMathML(jax[0], function (mml) {
+            _this.$copyText(mml).then(
+              function (e) {
+                _this.$message({
+                  message: "复制成功，粘贴至word吧",
+                  type: "success",
+                });
+              },
+              function (e) {
+                _this.$message({
+                  message: "复制失败",
+                  type: "error",
+                });
+              }
+            );
+          });
+        });
+      } else {
+        this.$copyText(this.value).then(
+          function (e) {
+            _this.$message({
+              message: "复制成功",
+              type: "success",
+            });
+          },
+          function (e) {
+            _this.$message({
+              message: "复制失败",
+              type: "error",
+            });
+          }
+        );
+      }
+    },
+    setValue(value) {
+      switch (value) {
+        case "sum":
+          value = "\\sum_{x}^{s}{A}";
+          break;
+        case "frac":
+          value = "\\frac{a}{b}";
+          break;
+        case "lim":
+          value = "\\lim_{x \\to 0}{x}";
+          break;
+        case "partial":
+          value = "\\partial{x}";
+          break;
+        case "int":
+          value = "\\int^{\\infty}_{0}{xdx}";
+          break;
+        case "∞":
+          value = "\\infty";
+          break;
+        case "α":
+          value = "\\alpha";
+          break;
+        case "β":
+          value = "\\beta";
+          break;
+        case "ω":
+          value = "\\omega";
+          break;
+        case "θ":
+          value = "\\theta";
+          break;
+        case "λ":
+          value = "\\lambda";
+          break;
+        case "μ":
+          value = "\\mu";
+          break;
+        case "σ":
+          value = "\\sigma";
+          break;
+      }
 
       const $vm = this.$refs.md;
       $vm.insertText($vm.getTextareaDom(), {
