@@ -7,15 +7,14 @@ import 'mavon-editor/dist/css/index.css'
 import 'font-awesome/css/font-awesome.min.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 import VueClipboard from 'vue-clipboard2'
 import db from './datastore'
+
+if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+
 Vue.config.productionTip = false
-Vue.use(VueClipboard)
-
-
 Vue.prototype.$db = db
-// use
+Vue.use(VueClipboard)
 Vue.use(mavonEditor)
 Vue.use(ElementUI)
 /* eslint-disable no-new */

@@ -12,5 +12,4 @@
 </script>
 
 <style>
-  /* CSS */
 </style>

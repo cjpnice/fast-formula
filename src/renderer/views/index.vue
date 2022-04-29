@@ -1,9 +1,9 @@
 <template>
   <div id="main">
     <mavon-editor
-      v-model="value"
+      v-model="formulaValue"
       :toolbars="toolbars"
-      :defaultOpen="preview"
+      defaultOpen="preview"
       :subfield="subfield"
       ref="md"
       id="math"
@@ -11,7 +11,7 @@
       <template slot="left-toolbar-before">
         <button
           type="button"
-          @click="openList"
+          @click="listDialogVisible = true"
           class="op-icon fa fa-list-ul"
           aria-hidden="true"
           title="查看已存公式"
@@ -20,7 +20,7 @@
       <template slot="left-toolbar-before">
         <button
           type="button"
-          @click="openSave"
+          @click="saveDialogVisible = true;"
           class="op-icon fa fa-floppy-o"
           aria-hidden="true"
           title="保存公式"
@@ -65,146 +65,15 @@
       <template slot="left-toolbar-after"> | </template>
       <template slot="left-toolbar-after">
         <button
+          v-for="item in hotKeyList"
+          :key="item.id"
           type="button"
-          @click="setValue('sum')"
+          @click="setValue(item.name)"
           class="op-icon"
           aria-hidden="true"
-          title="求和"
+          :title="item.title"
           style="width: 40px"
-        >求和
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('frac')"
-          class="op-icon"
-          aria-hidden="true"
-          title="分式"
-          style="width: 40px"
-        >分式
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('lim')"
-          class="op-icon"
-          aria-hidden="true"
-          title="极限"
-          style="width: 40px"
-        >极限
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('partial')"
-          class="op-icon"
-          aria-hidden="true"
-          title="微分"
-          style="width: 40px"
-        >微分
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('int')"
-          class="op-icon"
-          aria-hidden="true"
-          title="积分"
-          style="width: 40px"
-        >积分
-        </button>
-      </template>
-      <template slot="left-toolbar-after"> | </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('∞')"
-          class="op-icon"
-          aria-hidden="true"
-          title="∞"
-          style="width: 40px"
-        > ∞
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('α')"
-          class="op-icon"
-          aria-hidden="true"
-          title="α"
-          style="width: 40px"
-        > α
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('β')"
-          class="op-icon"
-          aria-hidden="true"
-          title="β"
-          style="width: 40px"
-        > β
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('ω')"
-          class="op-icon"
-          aria-hidden="true"
-          title="ω"
-          style="width: 40px"
-        > ω
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('θ')"
-          class="op-icon"
-          aria-hidden="true"
-          title="θ"
-          style="width: 40px"
-        > θ
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('λ')"
-          class="op-icon"
-          aria-hidden="true"
-          title="λ"
-          style="width: 40px"
-        > λ
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('μ')"
-          class="op-icon"
-          aria-hidden="true"
-          title="μ"
-          style="width: 40px"
-        > μ
-        </button>
-      </template>
-      <template slot="left-toolbar-after">
-        <button
-          type="button"
-          @click="setValue('σ')"
-          class="op-icon"
-          aria-hidden="true"
-          title="σ"
-          style="width: 40px"
-        > σ
+        >{{ item.title }}
         </button>
       </template>
     </mavon-editor>
@@ -291,28 +160,91 @@
 </template>
 
 <script>
-
 export default {
-  name: "home",
+  name: "index",
   data() {
     return {
-      value: "$$\n这里输入公式\n$$",
-      helpValue: "",
-      preview: "preview",
-      subfield: true,
-      showMore: false,
-      moreTitle: "查看更多符号",
-      toolbars: {},
-      saveDialogVisible: false,
-      listDialogVisible: false,
-      formulaName: "",
-      tableData: [],
-      searchInput: "",
-      copyStr: "dfg",
+      formulaValue: "$$\n这里输入公式\n$$", // 编辑公式的LaTex原字符串
+      helpValue: "", // 帮助文档的内容
+      subfield: true, // 是否展示预览
+      showMore: false, // 是否显示更多帮助文档
+      moreTitle: "查看更多符号", // 是否显示更多帮助文档提示信息
+      toolbars: {}, // 显示的toolBars
+      saveDialogVisible: false, // 是否显示保存视图的对话框
+      listDialogVisible: false, // 是否显示已存视图的对话框
+      formulaName: "", // 公式名称
+      tableData: [], // 已存公式列表
+      searchInput: "", // 搜索公式的输入
+      hotKeyList: [
+        // 自定义的toolBars
+        {
+          id: 1,
+          name: "sum",
+          title: "求和",
+        },
+        {
+          id: 2,
+          name: "frac",
+          title: "分式",
+        },
+        {
+          id: 3,
+          name: "lim",
+          title: "极限",
+        },
+        {
+          id: 4,
+          name: "partial",
+          title: "微分",
+        },
+        {
+          id: 5,
+          name: "∞",
+          title: "∞",
+        },
+        {
+          id: 6,
+          name: "α",
+          title: "α",
+        },
+        {
+          id: 7,
+          name: "β",
+          title: "β",
+        },
+        {
+          id: 8,
+          name: "ω",
+          title: "ω",
+        },
+        {
+          id: 9,
+          name: "θ",
+          title: "θ",
+        },
+        {
+          id: 10,
+          name: "λ",
+          title: "λ",
+        },
+        {
+          id: 11,
+          name: "μ",
+          title: "μ",
+        },
+        {
+          id: 12,
+          name: "σ",
+          title: "σ",
+        },
+      ],
     };
   },
   watch: {
-    value(newVal, oldVal) {
+    /*
+     *监听formulaValue的变化，提示用户不要删除'$$'
+     */
+    formulaValue(newVal, oldVal) {
       if (
         newVal.substring(0, 2) != "$$" ||
         newVal.substring(newVal.length - 2, newVal.length) != "$$"
@@ -329,21 +261,25 @@ export default {
     this.loadSavedFormula();
   },
   methods: {
+    /*
+     *将Latex转化为MathML
+     */
     toMathML(jax, callback) {
       var mml;
-
       try {
         mml = jax.root.toMathML("");
       } catch (err) {
         if (!err.restart) {
           throw err;
-        } // an actual error
-
+        }
         return MathJax.Callback.After([toMathML, jax, callback], err.restart);
       }
-
       MathJax.Callback(callback)(mml);
     },
+    /*
+     *type为mathml时，将Latex转化为MathML并复制到剪贴板
+     *type为latex时，直接Latex复制到剪贴板
+     */
     copy(type) {
       var _this = this;
       if (type == "mathml") {
@@ -357,7 +293,7 @@ export default {
         });
         let math = document.getElementById("math");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, math]);
-        
+
         MathJax.Hub.Queue(function () {
           var jax = MathJax.Hub.getAllJax();
 
@@ -379,7 +315,7 @@ export default {
           });
         });
       } else {
-        this.$copyText(this.value).then(
+        this.$copyText(this.formulaValue).then(
           function (e) {
             _this.$message({
               message: "复制成功",
@@ -395,6 +331,9 @@ export default {
         );
       }
     },
+    /*
+     *设置快捷键输出的字符
+     */
     setValue(value) {
       switch (value) {
         case "sum":
@@ -445,14 +384,15 @@ export default {
         str: "",
       });
     },
-
+    /*
+     *搜索公式
+     */
     search() {
       if (this.searchInput == "") {
         this.loadSavedFormula();
       } else {
         this.$db.find({ formulaName: this.searchInput }, (err, docs) => {
           if (err) {
-            console.log(err);
             return;
           }
           this.tableData.splice(0, this.tableData.length);
@@ -465,6 +405,9 @@ export default {
         });
       }
     },
+    /*
+     *加载已存公式
+     */
     loadSavedFormula() {
       this.$db.find({}, (err, docs) => {
         if (err) {
@@ -480,6 +423,9 @@ export default {
         }
       });
     },
+    /*
+     *删除公式
+     */
     deleteFormula(row) {
       this.deleteData(row.formulaName);
       this.loadSavedFormula();
@@ -488,11 +434,17 @@ export default {
         type: "success",
       });
     },
+    /*
+     *编辑公式
+     */
     editFormula(row) {
-      this.value = row.formula;
+      this.formulaValue = row.formula;
       this.formulaName = row.formulaName;
       this.listDialogVisible = false;
     },
+    /*
+     *读取txt文件
+     */
     getTxt(path) {
       let xhr = new XMLHttpRequest(),
         okStatus = document.location.protocol === "file:" ? 0 : 200;
@@ -501,9 +453,15 @@ export default {
       xhr.send(null);
       return xhr.responseText;
     },
+    /*
+     *切换预览
+     */
     changePreview() {
       this.subfield = !this.subfield;
     },
+    /*
+     *切换帮助文档
+     */
     openHelp() {
       if (this.showMore) {
         this.helpValue = this.getTxt("static/simpleHelp.txt");
@@ -515,6 +473,9 @@ export default {
         this.showMore = true;
       }
     },
+    /*
+     *新增公式
+     */
     insertData(name, data) {
       this.$db.insert(
         { formulaName: name, formula: data },
@@ -526,6 +487,9 @@ export default {
         }
       );
     },
+    /*
+     *更新公式
+     */
     updateData(name, data) {
       this.$db.update(
         {
@@ -544,6 +508,9 @@ export default {
         }
       );
     },
+    /*
+     *删除公式
+     */
     deleteData(name) {
       this.$db.remove({ formulaName: name }, {}, function (err, data) {
         if (err) {
@@ -552,15 +519,12 @@ export default {
         }
       });
     },
-    openSave() {
-      this.saveDialogVisible = true;
-    },
-    openList() {
-      this.listDialogVisible = true;
-    },
+    /*
+     *保存公式
+     */
     Save() {
       this.saveDialogVisible = false;
-      if (this.formulaName != "" && this.value != "") {
+      if (this.formulaName != "" && this.formulaValue != "") {
         this.$db.find({ formulaName: this.formulaName }, (err, docs) => {
           if (err) {
             console.log(err);
@@ -568,7 +532,7 @@ export default {
           }
           console.log(docs.length);
           if (docs.length == 0) {
-            this.insertData(this.formulaName, this.value);
+            this.insertData(this.formulaName, this.formulaValue);
             this.loadSavedFormula();
             this.$message({
               message: "保存成功",
@@ -581,8 +545,7 @@ export default {
               type: "warning",
             })
               .then(() => {
-                console.log(this.value);
-                this.updateData(this.formulaName, this.value);
+                this.updateData(this.formulaName, this.formulaValue);
                 this.loadSavedFormula();
                 this.$message({
                   message: "保存成功",
