@@ -127,7 +127,12 @@ function startElectron () {
     args = args.concat(process.argv.slice(2))
   }
 
-  electronProcess = spawn(electron, args)
+  // Filter out NODE_OPTIONS to avoid "openssl-legacy-provider is not allowed in NODE_OPTIONS" in Electron
+  const { NODE_OPTIONS, ...env } = process.env
+
+  electronProcess = spawn(electron, args, {
+    env
+  })
   
   electronProcess.stdout.on('data', data => {
     electronLog(data, 'blue')
